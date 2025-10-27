@@ -8,7 +8,7 @@ public class SimpleThreadPool implements ThreadPool{
 
     public SimpleThreadPool(int threadPoolSize,int taskQueueSize) {
         this.threadPoolSize = threadPoolSize;
-        taskQueue = new LinkedBlockingDeque<>(taskQueueSize);
+        taskQueue = new LinkedBlockingQueue<>(taskQueueSize);
         workers = new Thread[threadPoolSize];
         // 启动工作线程
         for (int i = 0; i < threadPoolSize; i++) {
@@ -22,7 +22,12 @@ public class SimpleThreadPool implements ThreadPool{
 if(isShutdown){
     throw new IllegalStateException("ThreadPool is shutdown");
 }
-taskQueue.offer(task);
+        try {
+            taskQueue.put(task); // 阻塞直到入队成功
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Task submission interrupted", e);
+        }
     }
 
     @Override
@@ -37,13 +42,15 @@ taskQueue.offer(task);
         @Override
         public void run() {
             while (!Thread.currentThread().isInterrupted()) {
-                Runnable task = null; // 阻塞获取
-                try {
-                    task = taskQueue.take();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                try
+                {
+                    Runnable task = taskQueue.take(); // 阻塞获取任务
+                    task.run(); // 安全：take() 成功返回，task 不为 null
+                } catch
+                (InterruptedException e) {
+                    Thread.currentThread().interrupt(); // 恢复中断状态（良好实践）
+                    break;
                 }
-                task.run();
             }
         }
     }
