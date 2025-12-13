@@ -8,7 +8,7 @@ public class SimpleThreadPool implements ThreadPool{
 
     public SimpleThreadPool(int threadPoolSize,int taskQueueSize) {
         this.threadPoolSize = threadPoolSize;
-        taskQueue = new LinkedBlockingQueue<>(taskQueueSize);
+        taskQueue = new ArrayBlockingQueue<>(taskQueueSize);
         workers = new Thread[threadPoolSize];
         // 启动工作线程
         for (int i = 0; i < threadPoolSize; i++) {

@@ -4,7 +4,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class test {
     public static void main(String[] args) {
-        ThreadPool pool = new SimpleThreadPool(20,120);
+        ThreadPool pool = new SimpleThreadPool(2,2);
+        //ThreadPoolExecutor pool = new ThreadPoolExecutor(2, 10, 1000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(2));
         AtomicInteger count = new AtomicInteger();
         for (int i = 0; i < 100; i++) {
             pool.execute(new Runnable() {
