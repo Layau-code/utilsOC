@@ -1,4 +1,7 @@
 public interface RateLimiter {
     boolean tryAcquire(int permits);
-    boolean tryAcquire();
+    default boolean tryAcquire(){
+        return tryAcquire(1);
+    }
+
 }

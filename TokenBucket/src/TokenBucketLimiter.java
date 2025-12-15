@@ -34,11 +34,6 @@ public class TokenBucketLimiter implements RateLimiter{
         curTokens.addAndGet(-permits);
         return true;
     }
-
-    @Override
-    public   boolean tryAcquire() {
-        return tryAcquire(1);
-    }
     public synchronized void  refill(){
         long now = System.currentTimeMillis();
         if(lastTime.get() > now){
