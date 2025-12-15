@@ -4,7 +4,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class LeakyBucketLimiter  {
-     //用队列模拟桶
+     //用队列模拟桶（注意：实际要存的是要执行的任务，作者用Boolean代替了）
     private final ArrayBlockingQueue<Boolean> queue ;
    //定时器
     private final ScheduledExecutorService scheduler;
@@ -37,6 +37,7 @@ public class LeakyBucketLimiter  {
     }
     //提交请求
     public boolean tryAcquire(){
+        //实际要把任务加入队列，这里只是模拟
         return queue.offer(true);
     }
     private void leak(){
